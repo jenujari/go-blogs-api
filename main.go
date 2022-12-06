@@ -9,6 +9,7 @@ import (
 
 func init() {
 	lUtls.SetGlobals()
+	lConf.InitDB()
 }
 
 func main() {
