@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Blog struct {
+type Article struct {
 	gorm.Model
 	NickName string
 	Title    string

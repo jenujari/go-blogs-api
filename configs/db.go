@@ -52,6 +52,6 @@ func InitDB() {
 }
 
 func migrateTables() {
-	DBO.AutoMigrate(&lModel.Blog{})
+	DBO.AutoMigrate(&lModel.Article{})
 	DBO.AutoMigrate(&lModel.Comment{})
 }
