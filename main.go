@@ -5,11 +5,14 @@ import (
 	lUtls "go-blogs-api/utils"
 	"log"
 	"os"
+	"path/filepath"
 )
 
 func init() {
+	absPath, _ := filepath.Abs(".")
 	lUtls.SetGlobals()
-	lConf.InitDB()
+	lConf.InitDB(false)
+	os.Setenv("ABS_PATH", absPath)
 }
 
 func main() {

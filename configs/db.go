@@ -9,6 +9,7 @@ import (
 	lModel "go-blogs-api/models"
 
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -18,13 +19,18 @@ var initOnce sync.Once
 var migrateOnce sync.Once
 var connErr error
 
-func InitDB() {
+func InitDB(isTest bool) {
 	connectStr := os.Getenv("CONNECTION_STRING")
+	connectStrTest := os.Getenv("TEST_CONNECTION_STRING")
 	dbLog := os.Getenv("DB_LOG")
 	gormConfig := new(gorm.Config)
 
 	oneTimeDBConnSetup := func() {
-		DBO, connErr = gorm.Open(mysql.Open(connectStr), gormConfig)
+		if isTest {
+			DBO, connErr = gorm.Open(sqlite.Open(connectStrTest), gormConfig)
+		} else {
+			DBO, connErr = gorm.Open(mysql.Open(connectStr), gormConfig)
+		}
 	}
 
 	if dbLog == "Y" {

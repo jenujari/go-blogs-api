@@ -2,6 +2,7 @@ package configs
 
 import (
 	"os"
+	"path"
 
 	"github.com/gofiber/fiber/v2"
 
@@ -13,7 +14,8 @@ import (
 )
 
 func InitFiber() *fiber.App {
-	engine := django.New("./views", ".html")
+	viewPath := path.Join(os.Getenv("ABS_PATH"), "views")
+	engine := django.New(viewPath, ".html")
 
 	var config fiber.Config = fiber.Config{
 		AppName:           os.Getenv("APP_NAME"),
