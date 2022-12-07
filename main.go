@@ -17,7 +17,7 @@ func main() {
 
 	APP := lConf.InitFiber()
 
-	InstallRouter(APP)
+	lUtls.InstallRouter(APP)
 
 	hostUrl := os.Getenv("APP_URL")
 	hostPort := os.Getenv("APP_PORT")

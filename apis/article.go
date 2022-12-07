@@ -1,4 +1,4 @@
-package api
+package apis
 
 import (
 	"strconv"
@@ -44,12 +44,16 @@ func getArticles(c *fiber.Ctx) error {
 		Desc:   orderDir == "desc",
 	}
 
-	lConf.DBO.
+	res := lConf.DBO.
 		Model(&lModels.Article{}).
 		Order(orderByClaus).
 		Offset(offset).
 		Limit(20).
 		Find(&articles)
+
+	if res.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).Send([]byte(res.Error.Error()))
+	}
 
 	return c.JSON(articles)
 }
@@ -61,9 +65,21 @@ func getArticle(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).Send([]byte("Invalid route parameters"))
 	}
 
-	var article lModels.Article
+	type Article struct {
+		ID        uint      `json:"id"`
+		NickName  string    `json:"name"`
+		Title     string    `json:"title"`
+		Content   string    `json:"content"`
+		CreatedAt time.Time `json:"created_at"`
+	}
 
-	lConf.DBO.First(&article, "id = ?", id)
+	var article Article
+
+	res := lConf.DBO.Model(&lModels.Article{}).Where("id = ?", id).First(&article)
+
+	if res.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).Send([]byte(res.Error.Error()))
+	}
 
 	if article.ID == 0 {
 		return c.Status(fiber.StatusBadRequest).Send([]byte("Article not found for this id."))
@@ -106,9 +122,21 @@ func getArticleComments(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).Send([]byte("Invalid route parameters"))
 	}
 
-	var comments []lModels.Comment
+	type comment struct {
+		ID       uint   `json:"id"`
+		NickName string `json:"name"`
+		BlogId   uint   `json:"blog_id"`
+		ParentId uint   `json:"parent_id"`
+		Content  string `json:"content"`
+	}
 
-	lConf.DBO.Find(&comments, "blog_id = ?", id)
+	var comments []comment
+
+	res := lConf.DBO.Model(&lModels.Comment{}).Where("blog_id = ?", id).Find(&comments)
+
+	if res.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).Send([]byte(res.Error.Error()))
+	}
 
 	return c.JSON(comments)
 }

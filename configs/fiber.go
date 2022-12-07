@@ -1,6 +1,8 @@
-package config
+package configs
 
 import (
+	"os"
+
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -14,7 +16,7 @@ func InitFiber() *fiber.App {
 	engine := django.New("./views", ".html")
 
 	var config fiber.Config = fiber.Config{
-		AppName:           "Customized Application Name",
+		AppName:           os.Getenv("APP_NAME"),
 		EnablePrintRoutes: false,
 		Views:             engine,
 	}
